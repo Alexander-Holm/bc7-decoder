@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BC7 decoder</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="preview.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1 style="grid-column: 2;">BC7 decoder</h1>
+        <a style="grid-column: 3;" id="github-link" href="www.google.com">GitHub</a>
+    </header>
+    <div id="file-container">
+        <form onsubmit="fileSubmit(event)">
+            <fieldset>
+                <legend>Choose image</legend>
+                <div class="radio-input">
+                    <input type="radio" id="mode-file-picker" name="mode" value="file-picker" onclick="toggleFileInput()" checked />
+                    <label for="mode-file-picker">Select your own</label>
+                </div>
+                <div class="radio-input">
+                    <input type="radio" id="mode-example" name="mode" value="example" onclick="toggleFileInput()" />
+                    <label for="mode-example">Use example image</label>
+                </div>
+                <div id="file-input">
+                    <label for="image-input">Select .dds file</label>
+                    <input type="file" name="image-input" id="image-input" />
+                </div>
+            </fieldset>
+            <button type="submit" id="submit">Decode</button>
+        </form>
+        <div id="info-table" >
+            <span style="grid-column: 1/3;" id="file-name" ></span>
+            <div style="grid-column: 1;" class="row-headers">
+                <span>File size</span>
+                <span>Dimensions</span>
+                <span>Decoding time</span>
+            </div>
+            <div style="grid-column: 2;">
+                <span id="file-size">-</span>
+                <span id="dimensions">-</span>
+                <span id="time">-</span>
+            </div>
+        </div>
+    </div>
+    <canvas id="canvas" ></canvas>
+</body>
+</html>
