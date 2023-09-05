@@ -1,5 +1,6 @@
 import ddsRead from "./dds-reader/index.js";
 import decodeBC7 from "../src/index.js";
+import { DXGI_FORMAT } from "./dds-reader/enums/DXGI_FORMAT.js";
 
 let HTMLelements;
 
@@ -42,7 +43,23 @@ window.fileSubmit = async (event) => {
         byteArray = await file.arrayBuffer();
     }
     
-    const parsedDds = ddsRead(byteArray);
+    let parsedDds;
+    try{
+        parsedDds = ddsRead(byteArray);
+        if(
+            parsedDds.header10?.dxgiFormat !== DXGI_FORMAT.BC7_TYPELESS &&
+            parsedDds.header10?.dxgiFormat !== DXGI_FORMAT.BC7_UNORM &&
+            parsedDds.header10?.dxgiFormat !== DXGI_FORMAT.BC7_UNORM_SRGB
+        ){
+            window.alert("The file is a DDS file, but the DXGI_FORMAT is not BC7.");
+            return;
+        }
+    }
+    catch(error){
+        window.alert("The file is not a DDS file, or it is formatted incorrectly.");
+        throw error;
+    }
+
     const width = parsedDds.header.dwWidth;
     const height = parsedDds.header.dwHeight;
 
@@ -68,12 +85,13 @@ function updateHTML(rgba8, width, height, fileName, fileSize, duration){
         time: document.getElementById("time"),
         canvas: document.getElementById("canvas"),
     }
-
-    const kiloBytes = Math.pow(10, -3) * fileSize;
-    const roundedKB = Math.round(kiloBytes);
+    
+    // Windows displays file size in kibibytes instead of kilobytes (but incorrectly labels it KB).
+    // Display file size in kibibytes to match the size the user will see in the file explorer.
+    const roundedKibiBytes = Math.round(fileSize / 1024);
 
     HTMLelements.fileName.innerHTML = fileName;
-    HTMLelements.fileSize.innerHTML = roundedKB + " KB";
+    HTMLelements.fileSize.innerHTML = roundedKibiBytes + " KiB";
     HTMLelements.imageSize.innerHTML = width + " x " + height;
     HTMLelements.time.innerHTML = duration + " ms";
 
