@@ -32,11 +32,12 @@ window.fileSubmit = async (event) => {
     let byteArray;
     if(mode === "example"){
         fileName = "example-image.dds";
-        const response = await fetch(fileName);
+        const filePath = "./preview/" + fileName;
+        const response = await fetch(filePath);
         fileSize = response.headers.get("content-length");
         byteArray = await response.arrayBuffer();
     }
-    else{
+    else{ // file picker input
         const file = formData.get("image-input");
         fileName = file.name;
         fileSize = file.size;
